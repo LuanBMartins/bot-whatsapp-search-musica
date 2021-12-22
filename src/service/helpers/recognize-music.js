@@ -10,29 +10,28 @@ module.exports = async (url) => {
     form.append('api_token', process.env.AUDD_TOKEN);
     form.append('url', url);
     form.append('return', 'deezer');
-
-    const response = await axios.post('https://api.audd.io/',
-    { 
+    const configs = {
         headers: {
-            'Content-Type': 'multipart/form-data'
+            ...form.getHeaders()
         }
-    },
-    {
-        body: form,
-        responseType: 'json',
-        resolveBodyOnly: true,
-    });
+    }
+    const response = await axios.post(
+        'https://api.audd.io/',
+        form,
+        configs    
+    );
 
-    console.log(response);
-    if (response && response.result) {
+    if (response.data.status === 'success') {
         return {
-            artist: response.result.artist,
-            title: response.result.title,
-            album: response.result.album,
+            artist: response.data.result.artist,
+            title: response.data.result.title,
+            album: response.data.result.album,
             deezer: {
-                picture: response.result.deezer && response.result.deezer.artist ? response.result.deezer.artist.picture_medium : undefined,
-                preview: response.result.deezer ? response.result.deezer.preview : undefined,
+                picture: response.data.result.deezer && response.data.result.deezer.artist ? response.data.result.deezer.artist.picture_medium : undefined,
+                preview: response.data.result.deezer ? response.data.result.deezer.preview : undefined,
             },
         };
     }
+
+    return false
 };

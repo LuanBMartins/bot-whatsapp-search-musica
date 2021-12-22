@@ -11,9 +11,6 @@ module.exports = {
     messageEventHandler: async (messageEvent) => {
         let content = [new TextContent('Testado')];
 
-        console.log('message:', messageEvent.message);
-        console.log('contents:', messageEvent.message.contents[0]);
-
         if (messageEvent.message.contents[0].type === 'file' && messageEvent.message.contents[0].fileMimeType.includes('audio')) {
             const music = await recognizeMusicFile(messageEvent.message.contents[0].fileUrl);
             
